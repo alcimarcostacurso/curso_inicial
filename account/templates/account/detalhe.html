@@ -1,0 +1,40 @@
+{% extends 'layout/layout_principal.html' %}
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Detalhes</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Usuário/Funcionário</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Detalhes</li>
+        </ol>
+    </nav>
+</div>
+<a class="btn btn-inverse-warning btn-fw mb-4" href="{% url 'listar_usuarios' %}">Cancelar</a>
+
+{% if user.funcionario.foto %}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <img src="{{user.funcionario.foto.url}}" class="img-fluid" alt="foto do funcionario">
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-4">
+        <p><strong>Nome:</strong> <span class="text-info">{{user.first_name}} {{user.last_name}}</span></p>
+        <p><strong>E-mail:</strong> <span class="text-info">{{user.email}}</span></p>
+        <p><strong>Username:</strong> <span class="text-info">{{user.username}}</span></p>
+         <p><strong>CPF:</strong> <span class="text-info">{{user.funcionario.cpf}}</span></p>
+    </div>
+    <div class="col-md-4">
+         <p><strong>Matrícula:</strong> <span class="text-info">{{user.funcionario.matricula}}</span></p>
+         <p><strong>Sexo:</strong> <span class="text-info">{{user.funcionario.sexo}}</span></p>
+         <p><strong>Data de nascimento:</strong> <span class="text-info">{{user.funcionario.data_nascimento|date:'d/m/Y'}}</span></p>
+    </div>
+    <div class="col-md-4">
+        <p><strong>Gerência:</strong> <span class="text-info">{{user.funcionario.gerencia}}</span></p>
+        <p><strong>Setor:</strong> <span class="text-info">{{user.funcionario.setor}}</span></p>
+        <p><strong>Endereço:</strong> <span class="text-info">{{user.funcionario.endereco}}</span></p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'layout/layout_principal.html' %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Deletar Gerência </h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Gerências</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Deletar</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="cart-title">Deletar Gerência</h4>
+                <h4>
+                    Tem certeza que você deseja deletar a gerência de nome <strong class="text-primary">{{ gerencia.nome }}</strong>???
+                </h4>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger mt-2">Deletar</button>
+                    <a class="btn btn-inverse-warning btn-fw mt-2" href="{% url 'gerencias:listar' %}">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

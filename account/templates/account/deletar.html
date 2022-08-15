@@ -1,0 +1,33 @@
+{% extends 'layout/layout_principal.html' %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Deletar usuário/funcionário</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Usuário</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Deletar</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    Deletar Usuário/Funcionário
+                </h4>
+                <h4>
+                    Tem certeza que deseja remover o usuário <span class="text-info">{{usuario.first_name}}</span>?
+                </h4>
+                <p>Após ser deletado o usuário não poderá ser recuperado!</p>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger mr-2">Deletar</button>
+                    <a href="{% url 'listar_usuarios' %}" class="btn btn-outline-warning">Voltar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'layout/layout_principal.html' %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title"> Gerências </h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Gerência</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Listar</li>
+        </ol>
+    </nav>
+</div>
+
+{% include 'utils/_alert.html' %}
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'gerencias:persistir' %}" class="btn btn-inverse-info btn-fw">Criar Gerência</a>
+    </div>
+</div>
+
+<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Gerências</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Sigla</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for gerencia in page_obj %}
+                    <tr>
+                        <td>{{gerencia.nome}}</td>
+                        <td>{{gerencia.sigla}}</td>
+                        <td>
+                            {% if gerencia.ativa %}
+                                <label class="badge badge-info">Ativa</label>
+                            {% else %}
+                            <label class="badge badge-danger">Desativada</label>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'gerencias:editar' gerencia.id %}" data-toggle="tooltip" data-placement="top" title="Editar">
+                                <i class="mdi mdi-border-color"></i>
+                            </a>
+                            <a href="{% url 'gerencias:deletar' gerencia.id %}" data-toggle="tooltip" data-placement="top" title="Deletar">
+                                <i class="mdi mdi-delete-forever"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'utils/_paginacao.html' %}
+
+{% endblock %}
+
+{% block jquery %}
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+{% endblock %}

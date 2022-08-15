@@ -1,0 +1,117 @@
+{% extends 'layout/layout_principal.html' %}
+{% load static %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title"> Controle de Acessos </h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Acessos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Listar</li>
+        </ol>
+    </nav>
+</div>
+
+{% include 'utils/_alert.html' %}
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form action="">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Nome ou CPF" aria-label="Nome ou CPF"
+                       aria-describedby="basic-addon2" name="search">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-primary" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'controle_acessos:criar' %}" class="btn btn-inverse-info btn-fw">Cadastrar Acesso</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Acessos</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>visitante</th>
+                            <th>Data entrada</th>
+                            <th>Hora entrada</th>
+                            <th>Data saída</th>
+                            <th>Hora saída</th>
+                            <th>Setores</th>
+                            <th>Saída</th>
+                            <th>Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for acesso in page_obj %}
+                        <tr>
+                            <td>{{acesso.visitante}}</td>
+                            <td>{{acesso.data_entrada|date:'d/m/Y'}}</td>
+                            <td>{{acesso.hora_entrada}}</td>
+                            <td>{{acesso.data_saida|date:'d/m/Y'}}</td>
+                            <td>{{acesso.hora_saida|default:'----'}}</td>
+                            <td>{% for setor in acesso.setores.all %} {{setor.sigla}}- {% endfor %}</td>
+                            <td>
+                                {% if acesso.data_saida %}
+                                <button class="btn btn-primary" disabled>Encerrado</button>
+                                {% else %}
+                                <form action="{% url 'controle_acessos:registrar_saida' acesso.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="bnt btn-danger btn-sair" type="submit">Sair</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'controle_acessos:editar' acesso.id %}" data-toggle="tooltip"
+                                   data-placement="top" title="Editar">
+                                    <i class="mdi mdi-border-color"></i>
+                                </a>
+                                <a href="{% url 'controle_acessos:deletar' acesso.id %}" data-toggle="tooltip"
+                                   data-placement="top" title="Deletar">
+                                    <i class="mdi mdi-delete-forever"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'utils/_paginacao.html' %}
+
+{% endblock %}
+
+
+{% block javascript_src %}
+<script src="{% static 'assets/js/sweetalert2.js' %}"></script>
+<script src="{% static 'assets/js/confirm-saida.js' %}"></script>
+{% endblock %}
+
+{% block jquery %}
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+
+
+
+
+
+
+</script>
+{% endblock %}

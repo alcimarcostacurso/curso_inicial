@@ -1,0 +1,57 @@
+{% extends 'layout/layout_principal.html' %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">{% if setor %} Atualizar {% else %} Criar {% endif %} Setor</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Setores</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {% if setor %} Atualizar {% else %} Criar {% endif %} Setor
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% if setor %} Atualizar {% else %} Criar {% endif %} Setor</h4>
+                <form class="forms-sample" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{form.nome|as_crispy_field}}
+                        </div>
+                        <div class="col-md-4">
+                            {{form.telefone|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{form.sigla|as_crispy_field}}
+                        </div>
+                        <div class="col-md-4">
+                            {{form.gerencia|as_crispy_field}}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary me-2">
+                        {% if setor %} Atualizar {% else %} Criar {% endif %}
+                    </button>
+                    <a class="btn btn-dark" href="{% url 'setores:listar' %}">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript_src %}
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+{% endblock %}

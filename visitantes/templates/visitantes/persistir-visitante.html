@@ -1,0 +1,83 @@
+{% extends 'layout/layout_principal.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block css %}
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+ <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+ <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+{{ form.media }}
+{% endblock %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">{% if visitante %} Atualizar {% else %} Criar {% endif %} Visitante</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Visitantes</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {% if visitante %} Atualizar {% else %} Criar {% endif %} Visitante
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% if visitante %} Atualizar {% else %} Criar {% endif %} Visitante</h4>
+                <form class="forms-sample" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{form.foto|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                            {{form.nome|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{form.cpf|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                             {{form.telefone|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                             {{form.data_nascimento|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                             {{form.sexo|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                             {{form.endereco|as_crispy_field}}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary me-2">
+                        {% if visitante %} Atualizar {% else %} Criar {% endif %}
+                    </button>
+                    <a class="btn btn-dark" href="{% url 'visitantes:listar' %}">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript_src %}
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script src="{% static 'assets/js/mask/jquery.mask.min.js' %}"></script>
+{% endblock %}
+
+{% block jquery %}
+<script>
+    $('#id_cpf').mask('000.000.000-00', {reverse: true});
+    $('#id_telefone').mask('00 00000-0000', {reverse: true});
+</script>
+{% endblock %}

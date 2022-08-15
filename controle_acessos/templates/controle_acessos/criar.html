@@ -1,0 +1,109 @@
+{% extends 'layout/layout_principal.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block css %}
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+      rel="stylesheet">
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+{{ form.media }}
+{% endblock %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Cadastrar Acesso</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Acessos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Cadastrar acesso
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Cadastrar Acesso</h4>
+                <form class="forms-sample" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{form.visitante|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{form.data_entrada|as_crispy_field}}
+                            <span class="text text-danger">{{form.data_entrada.errors}}</span>
+                        </div>
+                        <div class="col-md-6">
+                            {{form.hora_entrada|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{form.setores|as_crispy_field}}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary me-2">
+                        Cadastrar
+                    </button>
+                    <a class="btn btn-dark" href="{% url 'controle_acessos:listar' %}">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript_src %}
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
+<script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+<script src="{% static 'assets/js/select2.js' %}"></script>
+{% endblock %}
+
+{% block jquery %}
+<script>
+   $('#id_setores').select2({
+            ajax: {
+                url: '{% url 'setores:lista_de_setores_ajax' %}',
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {id: item.id, text: item.nome };
+                        })
+                    };
+                }
+            },
+            minimumInputLength: 1
+   });
+   $('#id_visitante').select2({
+            ajax: {
+                url: '{% url 'visitantes:lista_de_visitantes_ajax' %}',
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {id: item.id, text: item.nome };
+                        })
+                    };
+                }
+            },
+            minimumInputLength: 1
+   });
+
+</script>
+{% endblock %}
+
+
+

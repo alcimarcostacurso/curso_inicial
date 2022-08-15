@@ -1,0 +1,429 @@
+0 - Installar o Django especificando a versão do django: LTS (Long term suport)
+pip install django==2.2.8
+
+1 - Para mudar o nome da coluna da classe usa-se o db_column='novo_nome' e  ara mudar o nome padrão da classe na
+tabela utiliza-se o db_table na class Meta
+
+Exemplo:
+
+class Pessoa(models.Model):
+    nome = models.Carfield(max_length=100, db_column='nome_completo', default='')
+
+    class Meta:
+        db_table = 'pessoas'
+
+
+
+2 - Mostra a consulta que gerou o resultado str(resultado.query)
+Exemplo:
+    pessoas = Pessoa.objects.all()
+    print(srt(pessoas.query))
+
+3 - Django filter https://docs.djangoproject.com/en/3.2/ref/models/querysets/#filter
+
+4 - Verifica se o usuário está autenticado
+{% if request.user.is_authenticated %}
+{% endif %}
+
+
+5 - Para imprimir, devemos instalar para o Mac na máquina virtual:
+    brew install pango libffi
+    pip install weasyprint # instala o weasyprint
+    weasyprint --info # verifica a versão da instalação
+
+
+6 - validador de cpf
+https://pypi.org/project/django-cpf/
+pip install django-cpf
+INSTALLED_APPS = [
+    # Django apps
+    'cpf_field',
+    # My Apps
+]
+cpf = CPFField('CPF')
+
+7 - deixar o nome buscado no formuário em uma cunsulta após o retorno da mesma
+no value do imput, por exemplo, cpf digitar assim:
+<input name="cpf" value="{{request.GET.cpf}}" />
+
+8 - imagem no Django
+https://pypi.org/project/django-stdimage/
+pip install django-stdimage
+and add 'stdimage' to INSTALLED_APP
+imagem = StdImageField(upload_to='fotos', variations={
+        'avatar': (100, 100, True),
+        'detalhe': (250, 300, True),# 250 largura, 300 altura
+        'thumbnail': (400, 600)
+    }, delete_orphans=True, null=True, blank=True, verbose_name='Foto')
+
+<a href="{{ object.myimage.url }}"><img alt="" src="{{ object.myimage.thumbnail.url }}"/></a>
+
+
+9 - Input mask plugin
+https://igorescobar.github.io/jQuery-Mask-Plugin/
+
+
+10 - Paginação django pronta para paginação com ou sem filtro
+https://docs.djangoproject.com/en/4.0/topics/pagination/
+
+primeiramente devemos criar uma templatetag para que permaneça o critério de busca na paginação
+
+Cria-se um módulo templatetag dentro de uma aplicação e dentro do módulo criar um arquivo de nome url_replace.py
+com o seguinte conteúdo
+
+from django import template
+
+register = template.Library()
+
+@register.filter
+@register.simple_tag(takes_context=True)
+def url_replace(context, **kwargs):
+    query = context['request'].GET.copy()
+    query.pop('page', None)
+    query.update(kwargs)
+    return query.urlencode()
+
+
+
+O html da paginação é:
+
+{% load url_replace %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center pagination-sm">
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=1 %}">&laquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.previous_page_number %}">&lt</a></li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="?{% url_replace page=num %}">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=num %}">{{ num }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.next_page_number %}">&gt</a></li>
+                <li class="page-item"><a class="page-link" href="?{% url_replace page=page_obj.paginator.num_pages %}">&raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+
+Abaixo a view de paginação
+
+@login_required(login_url='login')
+def listar(request):
+    acessos_all = Acesso.objects.all().order_by('-id')
+    cpf = request.GET.get('cpf', None)
+
+    if cpf:
+        acessos_all = Acesso.objects.filter(visitante__cpf__icontains=cpf).order_by('-id')
+
+    # abaixo forma correta de paginar
+    paginator = Paginator(acessos_all, 1)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj
+    }
+
+    return render(request, 'acessos/listar.html', context)
+
+11 - link que facilita o botão cancelar de um formulário. Com ele ao ser clicado voltará para a view anterior ao
+formulário. Variável do Django que trabalha com direcionamento da navegação
+href="{{ request.META.HTTP_REFERER }}"
+
+
+12 - mensagem de erro não utilzada
+<div class="row">
+    <div class="col-md-12">
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+ou
+Apenas vc repete o nome no capo seguido de error
+por exemplo:
+{{form.data_entrada|as_crispy_field}}
+<span class="text text-danger">{{form.data_entrada.errors }}</span>
+
+13 - Trabalhado com datas
+documentação https://docs.python.org/3.0/library/datetime.html(no final tem as diretivas de formato de data)
+exibindo uma data que antes tinha o padrão americado e queremos o padrão brasileiro
+data= datetime(2021, 1, 7, 9, 40, 10)
+print(date.strftime('%d/%m/%Y %H:%M:%S'))
+
+Transformando string e data usando strptime(string, formato da data)
+from datetime import datetime, timedelta
+data = datetime.strptime('7/04/2022', '%d/%m/%Y')
+print(date)
+Se desejar pegar o timestemp da data é só fazer:
+print(data.timestamp())
+
+criar um data a partir do timestamp
+data = datetime.fromtimestamp(1555729200.0)
+
+você pode acrescentar dias a uma data usando o timedelta
+data = datetime.strptime('7/04/2022 19:00:00', '%d/%m/%Y')
+data = data + timedelta(days=5)
+
+Adicionando 10 dias e 30 segundos
+data = data + timedelta(days=5, seconds=30)
+
+Adicionar duas horas a data
+data = data _ timedelta(secunds=2*60*60)
+
+Adicionar 59 minutos as horas
+data = data _ timedelta(secunds=59*60)
+
+Ver apenas o tempo de uma data e hora
+print(data.time())
+
+
+13.2 - formulário com bootstrap 4
+
+# instalando
+pip install django-crispy-forms
+
+# configurando settings
+INSTALLED_APPS = [
+    ...
+
+    'crispy_forms',
+]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+no html
+{% load crispy_forms_tags %}
+
+{{ form|crispy }}
+    ou
+{{ form.name|as_crispy_field }}
+
+
+14 - classe com padroes de projeto
+exemplo:
+class Orcamento(object):
+    def __init__(self):
+        self.__valor = valor
+
+   @property
+   def valor(self):
+        return self.__valor
+Agora o valor só pode ser passado no construtur e consumido via get como no exemplo abaixo
+orcamento = Orgamento(500) # funciona
+orgamento.valor = 500 # não funciona
+print(orgamento.valor) # funciona
+
+
+Python 3 usar PEP-8, Type hints e Code Lint
+Verificador de tipagem mypy
+http://mypy-lang.org/
+
+
+15 - Adicionando e removend permissoes para usuario e grupos
+myuser.groups.set([group_list])
+myuser.groups.add(group, group, ...)
+myuser.groups.remove(group, group, ...)
+myuser.groups.clear()
+myuser.user_permissions.set([permission_list])
+myuser.user_permissions.add(permission, permission, ...)
+myuser.user_permissions.remove(permission, permission, ...)
+myuser.user_permissions.clear()
+
+Supondo que você tenha um aplicativo com um app_label foo e um modelo chamado Bar,
+para testar as permissões básicas, você deve usar:
+add: user.has_perm('foo.add_bar')
+change: user.has_perm('foo.change_bar')
+delete: user.has_perm('foo.delete_bar')
+view: user.has_perm('foo.view_bar')
+
+16 - mensagem de alerta
+no settings configurar o MESSAGE_TAGS:
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+    messages.SUCCESS: 'success',
+    messages.INFO: 'info',
+    messages.WARNING: 'warning'
+}
+
+html de alert com bootstrap
+<div class="row">
+    {% if messages %}
+        {% for message in messages %}
+    <div class="col-md-12">
+        <div class="alert alert-{{message.tags}}" role="alert">
+            {{message}}
+        </div>
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+18-Verificar grupo do usuario no sidebar
+Criar um diretório com nome templatetags dentro de uma aplicação e criar o arquivo de nome tem_grupo.py e
+escrever dentro:
+from django import template
+
+register = template.Library()
+
+
+@register.filter
+def tem_grupo(user, nome_grupo):
+    return user.groups.filter(name=nome_grupo).exists()
+
+
+Agora no html vc pode verificar se o usário pertente a um grupo fazendo assim:
+{% if request.user|tem_grupo:"astmp" or user.is_superuser %}
+{% endif %}
+
+
+19-Autoreferencia de modelos
+``` SET_NULl é para quando deletar um supervisor não delegar o empregado.```
+class Empregado(models.Model):
+    nome = models.CharField(max_lenth=100)
+    supervisor = models.ForeingKey('self', null-True, on_delete=models.SET_NULL)
+
+
+20-criando modelos baseado em uma base de dados já existente
+configurando o acesso ao banco com opção OPTIONS
+DATABASES = {
+    'default': {
+    'ENGINE':  'django.db.backends.postgresql',
+    'NAME': 'nome_do_banco',
+    'OPTIONS': {
+        'options' : "-c search_path=inv",
+    },
+    'USER': 'postgres',
+    'PASSWORD': 'N797134',
+    'HOST': '127.0.0.1',
+    'PORT': '5435',
+    }
+}
+python manage.py inspectdb > nome_do_arquivo_que_contera_os_modelos.py
+
+21- logging de aplicações:
+configuração no settings:
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+    },
+}
+
+exemplo de aplicação em uma função real:
+
+@login_required(login_url='login')
+@permission_required(['setores.add_setor', 'setores.change_setor'], raise_exception=True)
+def persistir_setor(request, id=None):
+    logger.warning('Função persistir acesada por: {} em {}'.format(str(request.user.username), str(datetime.datetime.now)))
+    try:
+        if id:
+            instance = get_object_or_404(Setor, pk=id)
+            form = SetorForm(request.POST or None, instance=instance)
+        else:
+            instance = None
+            form = SetorForm(request.POST or None, instance=None)
+
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
+
+                if instance:
+                    messages.success(request, 'Setor atualizado com sucesso!!!')
+                else:
+                    messages.success(request, 'Setor criado com sucesso!!!')
+
+                return redirect('setores:listar')
+
+    except Exception as e:
+        logger.error(str(e))
+
+    context = {
+        'form': form,
+        'setor': instance
+    }
+    return render(request, 'setores/persistir-setor.html', context)
+
+    # signals
+
+    É um observador da aplicação para realizar algum evendo
+    https://docs.djangoproject.com/en/4.0/ref/signals/
+
+ 22 -# tempos dominus django
+ https://pypi.org/project/django-tempus-dominus/
+
+
+ 23 - Shell django
+ python manage.py shell
+ from gerencias.models import Gerencia
+ gerencia = Gerencia.objects.first()
+ dir(gerencia)
+ gerencia.setor_set.order_by('nome')
+
+
+ 24 - autocomplete
+     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        '''
+        O if abaixo busca somente os setores da gerencia especificada
+        '''
+        if self.instance and self.instance.gerencia:
+            self.fields['setor'].queryset = Setor.objects.filter(gerencia=self.instance.gerencia)
+
+    # Abaixo validação opcional com outra finalidade
+    def clean_setor(self):
+        gerencia = self.cleaned_data.get('gerencia')
+
+        setor = self.cleaned_data.get('setor')
+
+        if (gerencia and setor) and not setor.gerencia == gerencia:
+            raise ValidationError("Este setor não pertence a essa gerência")
+        return setor
+
+
+ def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        '''
+        O if abaixo busca somente os setores da gerencia especificada
+        '''
+        if self.instance and self.instance.gerencia:
+            self.fields['setor'].queryset = Setor.objects.filter(gerencia=self.instance.gerencia)

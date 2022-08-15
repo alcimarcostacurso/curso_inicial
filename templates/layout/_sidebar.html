@@ -1,0 +1,98 @@
+{% load static %}
+{% load tem_grupo %}
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+
+    </div>
+    <ul class="nav">
+        <li class="nav-item profile">
+            <div class="profile-desc">
+                <div class="profile-pic">
+                    <div class="profile-name">
+                        <h5 class="mb-0 font-weight-normal">{{user.first_name}}</h5>
+                        <span>{{user.funcionario.setor.sigla}}</span>
+                    </div>
+                </div>
+                <a href="#" id="profile-dropdown" data-bs-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+                <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list"
+                     aria-labelledby="profile-dropdown">
+                    <a href="{% url 'password_change' %}" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-settings text-success"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">Mudar senha</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'logout' %}" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-logout  text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">Sair</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item nav-category">
+            <span class="nav-link">Menu</span>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+                <span class="menu-title">Dashboard</span>
+            </a>
+        </li>
+        {% if request.user|tem_grupo:"grupo_funcionario_gerente" or request.user.is_superuser %}
+        <li class="nav-item menu-items">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-adminstracao" aria-expanded="false"
+               aria-controls="ui-basic">
+              <span class="menu-icon">
+                <i class="mdi mdi-settings text-success"></i>
+              </span>
+                <span class="menu-title">Administração</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-adminstracao">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'gerencias:listar' %}">Gerências</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'setores:listar' %}">Setores</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link"
+                                            href="{% url 'listar_usuarios' %}">Usuários</a></li>
+                </ul>
+            </div>
+        </li>
+        {% endif %}
+        <li class="nav-item menu-items">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-portaria" aria-expanded="false"
+               aria-controls="ui-basic">
+              <span class="menu-icon">
+                <i class="mdi mdi-laptop"></i>
+              </span>
+                <span class="menu-title">Portaria</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-portaria">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'visitantes:listar' %}">Visitantes</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link"
+                                            href="{% url 'controle_acessos:listar' %}">Controle de acessos</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                                            href="{% url 'relatorio' %}">Relatórios</a></li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</nav>

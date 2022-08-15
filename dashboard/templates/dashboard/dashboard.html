@@ -1,0 +1,201 @@
+{% extends 'layout/layout_principal.html' %}
+{% load static %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Dashbaord</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Gráficos</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Qtd acessos por setor</h4>
+                <canvas id="barChart" style="height:230px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Qtd acessos por setor</h4>
+                <canvas id="doughnutChart" style="height:250px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Qtd acessos por sexo</h4>
+                <canvas id="PolarAreaChartSexo" style="height:230px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Qtd acessos por sexo</h4>
+                <canvas id="doughnutChartSexo" style="height:250px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript_src %}
+<script src="{% static 'assets/vendors/chart.js/Chart.min.js' %}"></script>ß
+{% endblock %}
+
+{% block jquery %}
+<script>
+const const_bar = document.getElementById('barChart').getContext('2d');
+const barChart = new Chart(const_bar, {
+    type: 'bar',
+    data: {
+        labels: {{labels_setores|safe}},
+        datasets: [{
+            label: '# of Votes',
+            data: {{data_setores|safe}},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+    }
+});
+const const_doug = document.getElementById('doughnutChart').getContext('2d');
+const doughnutChart = new Chart(const_doug, {
+    type: 'doughnut',
+    data: {
+        labels: {{labels_setores|safe}},
+        datasets: [{
+            label: '# of Votes',
+            data: {{data_setores|safe}},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+const const_doug_sexo = document.getElementById('PolarAreaChartSexo').getContext('2d');
+const PolarAreaChartSexo = new Chart(const_doug_sexo, {
+    type: 'polarArea',
+    data: {
+        labels: {{labels_por_sexo|safe}},
+        datasets: [{
+            label: '# of Votes',
+            data: {{data_por_sexo|safe}},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+const const_doug_sexo_2 = document.getElementById('doughnutChartSexo').getContext('2d');
+const doughnutChartSexo = new Chart(const_doug_sexo_2, {
+    type: 'doughnut',
+    data: {
+        labels: {{labels_por_sexo|safe}},
+        datasets: [{
+            label: '# of Votes',
+            data: {{data_por_sexo|safe}},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

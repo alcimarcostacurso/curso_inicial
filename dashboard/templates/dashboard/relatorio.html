@@ -1,0 +1,44 @@
+{% extends 'layout/layout_principal.html' %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Relatório</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Relatório</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Listar</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="cart-title">Relatório de acessos por período</h4>
+
+                <form action="{% url 'exportar_pdf' %}" method="get" target="_blank">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="data_inicio">Data Início</label>
+                                <input type="date" class="form-control" id="data_inicio" required
+                                       name="data_inicio" value="{{request.get.data_inicio}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="data_fim">Data Fim</label>
+                                <input type="date" class="form-control" id="data_fim" required
+                                       name="data_fim" value="{{request.get.data_fim}}">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-outline-success mt-2">Gerar PDF</button>
+                    <a class="btn btn-inverse-warning btn-fw mt-2" href="{% url 'dashboard' %}">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

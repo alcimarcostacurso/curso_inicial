@@ -1,0 +1,86 @@
+{% extends 'layout/layout_principal.html' %}
+{% load static %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Detalhes de Visitante </h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'visitantes:listar' %}">Visitantes</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Detalhar</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="{% url 'visitantes:listar' %}" class="btn btn-inverse-warning btn-fw mb-2">Voltar</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        {% if visitante.foto %}
+                        <img src="{{visitante.foto.url}}" class="img img-fluid" alt="">
+                        {% else %}
+                        <img src="{% static 'assets/img_guardiao/img_visitante.png' %}" class="img img-fluid" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9">
+                        <p>Nome: <span class="text text-info">{{visitante.nome}}</span></p>
+                        <p>CPF: <span class="text text-info">{{visitante.cpf}}</span></p>
+                        <p>Telefone: <span class="text text-info">{{visitante.telefone}}</span></p>
+                        <p>Data de nascimento: <span class="text text-info">{{visitante.data_nascimento|date:'d/m/Y'}}</span></p>
+                        <p>Sexo: <span class="text text-info">{{visitante.sexo}}</span></p>
+                        <p>Endereço: <span class="text text-info">{{visitante.endereco}}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Acessos</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Data entrada</th>
+                            <th>Hora entrada</th>
+                            <th>Data saída</th>
+                            <th>Hora saída</th>
+                            <th>Setores</th>
+                            <th>Saída</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for acesso in acessos %}
+                        <tr>
+                            <td>{{acesso.data_entrada|date:'d/m/Y'}}</td>
+                            <td>{{acesso.hora_entrada}}</td>
+                            <td>{{acesso.data_saida|date:'d/m/Y'}}</td>
+                            <td>{{acesso.hora_saida|default:'----'}}</td>
+                            <td>{% for setor in acesso.setores.all %} {{setor.sigla}}- {% endfor %}</td>
+                            <td>
+                                {% if acesso.data_saida %}
+                                <span class="text text-primary">Encerrado</span>
+                                {% else %}
+                                <span class="text text-danger">Aberto</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

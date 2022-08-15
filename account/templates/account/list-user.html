@@ -1,0 +1,85 @@
+{% extends 'layout/layout_principal.html' %}
+{% load static %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Usuários</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Usuários</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Listar</li>
+        </ol>
+    </nav>
+</div>
+
+{% include 'utils/_alert.html' %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Usuários</h4>
+                <p><a href="{% url 'register' %}" class="btn btn-inverse-info btn-fw">Criar usário</a></p>
+                <div class="table-responsive">
+                    <table class="table table-dark">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Foto</th>
+                            <th>Username</th>
+                            <th>E-mail</th>
+                            <th>Nome</th>
+                            <th>Matrícula</th>
+                            <th>Telefone</th>
+                            <th>Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for usuario in page_obj %}
+                        <tr>
+                            <td>{{usuario.id}}</td>
+                            <td>
+                                {% if usuario.funcionario.foto %}
+                                <img src="{{usuario.funcionario.foto.avatar.url}}" alt="foto avatar">
+                                {% else %}
+                                <img src="{% static 'assets/img_guardiao/img_user_list.png' %}" alt="foto avatar">
+                                {% endif %}
+                            </td>
+                            <td>{{usuario.username}}</td>
+                            <td>{{usuario.email}}</td>
+                            <td>{{usuario.firt_name}} {{usuario.last_name}}</td>
+                            <td>{{usuario.funcionario.matricula }}</td>
+                            <td>{{usuario.funcionario.telefone}}</td>
+                            <td>
+                                <a href="{% url 'detalhar_user_funcionario' usuario.id %}" data-toggle="tooltip"
+                                   data-placement="top" title="Detalhar">
+                                    <i class="mdi mdi-glasses"></i>
+                                </a>
+                                <a href="{% url 'edit_user_funcionario' usuario.id %}" data-toggle="tooltip"
+                                   data-placement="top" title="Editar">
+                                    <i class="mdi mdi-border-color"></i>
+                                </a>
+                                <a href="{% url 'deletar' usuario.id %}" data-toggle="tooltip"
+                                   data-placement="top" title="Deletar">
+                                    <i class="mdi mdi-delete-forever"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block jquery %}
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+</script>
+{% endblock %}

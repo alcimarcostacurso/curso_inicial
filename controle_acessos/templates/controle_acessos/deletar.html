@@ -1,0 +1,31 @@
+{% extends 'layout/layout_principal.html' %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">Deletar Acesso </h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Acessos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Deletar</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="cart-title">Deletar Acesso</h4>
+                <h4>
+                    Tem certeza que você deseja deletar o acesso???
+                </h4>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger mt-2">Deletar</button>
+                    <a class="btn btn-inverse-warning btn-fw mt-2" href="{% url 'controle_acessos:listar' %}">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

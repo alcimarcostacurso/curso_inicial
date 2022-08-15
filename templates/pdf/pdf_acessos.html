@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family:Helvetica, sans-serif;
+            color:#222;
+            line-height:1.5;
+            margin:0;
+            padding:0;
+            background:#fff;
+        }
+        h3 { margin:0}
+
+        .cabecalho { text-align: center;}
+
+        table {
+        width:100%;
+        border-spacing:0;
+        border-collapse: collapse;
+        margin:5px 20px 20px 20px;
+        }
+        table th, table td {
+            text-align:left;
+            margin:0;
+            padding: 3px;
+        }
+        thead th {
+            background:#5993bb;
+            color:#fff;
+            font-weight:bold;
+
+        }
+        .pagagrafo {margin-bottom: 0px;}
+    </style>
+</head>
+<body>
+    <div class="cabecalho">
+        <h3>Sistema Guardião</h3>
+        <h3>Controle de Acessos</h3>
+        <p>Relatório de acessos a empresa no período de {{data_inicio_pdf|date:'d/m/Y' }} à
+        {{ data_fim_pdf|date:'d/m/Y' }}</p>
+    </div>
+    <div>
+        {% if acessos %}
+        <table>
+            <thead>
+            <tr>
+                <th>Visitante</th>
+                <th>Data</th>
+                <th>Hora</th>
+                <th>Setores</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for acesso in acessos %}
+                <tr>
+                    <td>{{acesso.visitante.nome}}</td>
+                    <td>{{acesso.data_entrada|date:'d/m/Y'}}</td>
+                    <td>{{acesso.hora_entrada}}</td>
+                    <td>
+                        {% for setor in acesso.setores.all %}
+                        <span>{{setor.sigla}}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <h3>Não existem acessos com o critério de pesquisa solicitado.</h3>
+        {% endif %}
+    </div>
+
+</body>
+</html>

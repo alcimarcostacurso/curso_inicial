@@ -1,0 +1,15 @@
+{% extends 'layout/layout.html' %}
+
+{% block conteudo %}
+    <div class="col-lg-6 text-lg-right pr-lg-4">
+        <h5 class="display-1 mb-0">Deslogado</h5>
+    </div>
+    <div class="col-lg-6 error-page-divider text-lg-left pl-lg-4">
+        <h2>Você foi deslogado.</h2>
+        <h3 class="font-weight-light">Clique no botão abaixo para ir a tela de login</h3>
+    </div>
+{% endblock %}
+
+{% block botao %}
+      <a class="text-white font-weight-medium" href="{% url 'login' %}">Login</a>
+{% endblock %}

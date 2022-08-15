@@ -1,0 +1,57 @@
+{% extends 'layout/layout_principal.html' %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block conteudo %}
+<div class="page-header">
+    <h3 class="page-title">{% if gerencia %} Atualizar {% else %} Criar {% endif %} Gerência</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Gerências</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {% if gerencia %} Atualizar {% else %} Criar {% endif %} Gerência
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{% if gerencia %} Atualizar {% else %} Criar {% endif %} Gerência</h4>
+                <form class="forms-sample" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{form.nome|as_crispy_field}}
+                        </div>
+                        <div class="col-md-4">
+                            {{form.sigla|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                          <input type="checkbox"
+                                 {% if gerencia.ativa or not gerencia.id %} checked {% endif %}
+                                 data-toggle="toggle" data-onstyle="success"
+                          data-on="Ativa" data-off="Inativa" name="ativa">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary me-2">
+                        {% if gerencia %} Atualizar {% else %} Criar {% endif %}
+                    </button>
+                    <a class="btn btn-dark" href="{% url 'gerencias:listar' %}">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript_src %}
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+{% endblock %}
